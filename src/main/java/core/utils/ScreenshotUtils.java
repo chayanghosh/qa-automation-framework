@@ -9,6 +9,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import io.qameta.allure.Allure;
+import java.io.ByteArrayInputStream;
+
 public class ScreenshotUtils {
 
     public static String takeScreenshot(String testName) {
@@ -28,5 +31,9 @@ public class ScreenshotUtils {
             e.printStackTrace();
             return null;
         }
+    }
+    
+    public static void attachScreenshot(byte[] screenshotBytes) {
+        Allure.addAttachment("Screenshot", new ByteArrayInputStream(screenshotBytes));
     }
 }

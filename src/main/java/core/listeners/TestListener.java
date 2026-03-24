@@ -1,6 +1,11 @@
 package core.listeners;
 
+import core.driver.DriverManager;
 import core.utils.ScreenshotUtils;
+
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.ITestListener;
@@ -26,6 +31,12 @@ public class TestListener implements ITestListener {
 
         String path = ScreenshotUtils.takeScreenshot(result.getName());
         log.error("Screenshot saved at: {}", path);
+        
+        WebDriver driver = DriverManager.getDriver();
+
+        byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
+
+        ScreenshotUtils.attachScreenshot(screenshot);
     }
 
     @Override

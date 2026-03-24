@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Assertion Failures (Product Bug)",
+    "matchedStatuses": ["failed"],
+    "messageRegex": ".*AssertionError.*"
+  },
+  {
+    "name": "Element Not Found (Locator Issue)",
+    "matchedStatuses": ["failed"],
+    "messageRegex": ".*NoSuchElementException.*"
+  },
+  {
+    "name": "Timeout Issues (Sync Problem)",
+    "matchedStatuses": ["failed"],
+    "messageRegex": ".*TimeoutException.*"
+  },
+  {
+    "name": "WebDriver Issues (Infra/Grid)",
+    "matchedStatuses": ["broken"],
+    "messageRegex": ".*WebDriverException.*"
+  }
+]
