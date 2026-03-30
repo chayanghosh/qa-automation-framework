@@ -1,0 +1,61 @@
+name: Selenium Tests CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Start Selenium Grid
+        run: |
+          docker run -d -p 4444:4444 --name selenium-grid selenium/standalone-chrome
+
+      - name: Wait for Grid to be ready
+        run: |
+          for i in {1..10}; do
+            curl -s http://localhost:4444/wd/hub/status | grep "ready" && break
+            echo "Waiting for Grid..."
+            sleep 3
+          done
+
+      - name: Run Tests
+        run: mvn clean test -Dgrid.url=http://localhost:4444/wd/hub
+
+      - name: Upload Allure Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results
+          path: target/allure-results
+
+      - name: Install Allure
+        if: always()
+        run: |
+          wget https://github.com/allure-framework/allure2/releases/latest/download/allure-2.27.0.tgz
+          tar -xzf allure-2.27.0.tgz
+          sudo mv allure-2.27.0 /opt/allure
+          sudo ln -s /opt/allure/bin/allure /usr/bin/allure
+
+      - name: Generate Allure Report
+        if: always()
+        run: allure generate target/allure-results --clean -o target/allure-report
+
+      - name: Upload Allure Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: target/allure-report
